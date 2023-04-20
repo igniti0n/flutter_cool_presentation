@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AnimationsDemo extends StatefulWidget {
+class AnimationsDemo extends StatefulHookWidget {
   const AnimationsDemo({super.key});
 
   @override
@@ -14,6 +15,9 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
 
   @override
   Widget build(BuildContext context) {
+    final animationController =
+        useAnimationController(initialValue: 0, duration: 1600.ms);
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: Center(
@@ -27,10 +31,17 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
                     .animate()
                     .moveX(delay: 0.ms, duration: 600.ms, begin: 200),
                 SvgPicture.asset('images/sunglasses.svg')
-                    .animate(delay: 700.ms)
+                    .animate(
+                      delay: 700.ms,
+                    )
                     .fadeIn(duration: 400.ms)
                     .rotate(duration: 1000.ms, begin: 0.5)
-                    .moveY(duration: 600.ms, begin: 700),
+                    .moveY(duration: 600.ms, begin: 700)
+                    .animate(
+                      controller: animationController,
+                      autoPlay: false,
+                    )
+                    .shake(duration: 400.ms)
               ],
             ),
             const Text(
@@ -38,7 +49,11 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
               style: TextStyle(
                 fontSize: 20,
               ),
-            ).animate(delay: 1600.ms).fadeIn(duration: 400.ms),
+            )
+                .animate(
+                  delay: 1600.ms,
+                )
+                .fadeIn(duration: 400.ms),
             const SizedBox(
               height: 80,
             ),
@@ -50,7 +65,11 @@ class _AnimationsDemoState extends State<AnimationsDemo> {
             ),
             TextButton(
               onPressed: () {
-                setState(() => money++);
+                setState(() {
+                  money++;
+                  animationController.reset();
+                  animationController.forward();
+                });
               },
               child: const Text(
                 'Add money',
